@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "postinstall": "prisma generate",
     "scrape": "ts-node --project tsconfig.json src/lib/scraper.ts",
     "bot": "ts-node --project tsconfig.json src/lib/telegram.ts",
     "bot:dev": "nodemon --watch src/lib/telegram.ts --exec ts-node src/lib/telegram.ts",
@@ -15,6 +16,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
+    "@types/pg": "^8.15.6",
     "axios": "^1.13.1",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.1",
@@ -26,6 +28,7 @@
     "node-telegram-bot-api": "^0.64.0",
     "nodemailer": "^6.9.13",
     "openai": "^4.28.0",
+    "pg": "^8.16.3",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "tailwind-merge": "^2.3.0",

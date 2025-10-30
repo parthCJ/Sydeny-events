@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "regions": ["syd1"],
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "TELEGRAM_BOT_TOKEN": "@telegram_bot_token",
+    "OPENAI_API_KEY": "@openai_api_key",
+    "SCRAPER_SECRET": "@scraper_secret",
+    "NEXT_PUBLIC_APP_URL": "@next_public_app_url"
+  },
+  "crons": [
+    {
+      "path": "/api/scrape",
+      "schedule": "0 */6 * * *"
+    }
+  ]
+}
