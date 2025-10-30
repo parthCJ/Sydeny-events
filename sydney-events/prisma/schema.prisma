@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  venue       String?
+  address     String?
+  city        String   @default("Sydney")
+  country     String   @default("Australia")
+  startDate   DateTime
+  endDate     DateTime?
+  imageUrl    String?
+  ticketUrl   String
+  price       String?
+  category    String?
+  organizer   String?
+  source      String   // e.g., "eventbrite", "meetup", "timeout"
+  sourceId    String?  // Original ID from source
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([source, sourceId])
+  @@index([startDate])
+  @@index([category])
+}
+
+model EmailSubscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  eventId   String?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id           String           @id @default(uuid())
+  telegramId   String           @unique
+  username     String?
+  firstName    String?
+  lastName     String?
+  isActive     Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  preferences  UserPreference[]
+  notifications Notification[]
+}
+
+model UserPreference {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Event preferences
+  categories       String?  // JSON array of preferred categories
+  priceRange       String?  // e.g., "free", "0-50", "50-100", "100+"
+  preferredVenues  String?  // JSON array of venue names
+  preferredDays    String?  // JSON array of days: ["Friday", "Saturday"]
+  notifyDaysBefore Int      @default(1) // How many days before event to notify
+  
+  // Personal preferences
+  interests        String?  // Free text extracted by LLM
+  budget           String?  // e.g., "low", "medium", "high"
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId   String
+  message   String
+  sent      Boolean  @default(false)
+  sentAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([sent])
+}
